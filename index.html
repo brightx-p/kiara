@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>For Kiara 💕</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Theme colors -->
+  <meta name="theme-color" content="#ff6b9d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="For Kiara 💕" />
+
+  <!-- Icons for apple devices -->
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
+
+  <!-- Particles.js for hearts -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    /* Your full CSS here (see below, I’ll provide after) */
+  </style>
+</head>
+<body>
+
+<div id="particles-js"></div>
+
+<div class="app-container">
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-section="home">Home</button>
+    <button class="nav-btn" data-section="song">Song</button>
+    <button class="nav-btn" data-section="memories">Memories</button>
+    <button class="nav-btn" data-section="messages">Messages</button>
+  </nav>
+
+  <main class="sections">
+
+    <section id="home" class="section active">
+      <h1 id="typeText"></h1>
+      <p>Somewhere between all the little conversations and stolen smiles,<br>you quietly became my favorite feeling 😌💕</p>
+      <div id="countdown" class="countdown"></div>
+      <button onclick="showLove()">One last thing… ❤️</button>
+      <div id="loveMessage" class="hidden">
+        Kiara…<br><br>
+        You’re not just special to me.<br>
+        You’re my peace,<br>
+        my joy,<br>
+        my safe place.<br><br>
+        <span>You’re home 💗</span>
+      </div>
+    </section>
+
+    <section id="song" class="section">
+      <div class="subtitle">This song reminds me of you… press play when you’re ready 💞</div>
+      <iframe
+        style="border-radius:20px; box-shadow: 0 12px 35px rgba(0,0,0,0.4);"
+        src="https://open.spotify.com/embed/track/0PqiJTvvmEiV3rTZcQ7SIS"
+        width="100%"
+        height="100"
+        frameborder="0"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+      </iframe>
+    </section>
+
+    <section id="memories" class="section">
+      <button onclick="showPassword()">Open our memories 🔒💘</button>
+      <div id="passwordBox" class="hidden">
+        <p class="subtitle">Enter your name to continue 😉</p>
+        <input type="text" id="passwordInput" placeholder="Your name…" autocomplete="off" />
+        <button onclick="checkPassword()">Unlock Forever 💕</button>
+      </div>
+      <div id="gallerySection" class="hidden">
+        <div class="subtitle">Everything you ever sent me… I kept it all safe forever 💖</div>
+        <div class="gallery" id="gallery">
+          <!-- Images and videos will be loaded here by JS -->
+        </div>
+      </div>
+    </section>
+
+    <section id="messages" class="section">
+      <h2>Sweet Messages 💌</h2>
+      <div class="messages-container" id="messagesContainer">
+        <!-- Your sweet notes will appear here -->
+      </div>
+      <textarea id="messageInput" placeholder="Write me a note..." rows="4"></textarea>
+      <button onclick="saveMessage()">Send 💖</button>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Register Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').then(reg => {
+        console.log('Service Worker registered!', reg);
+      });
+    });
+  }
+
+  // Navigation Logic
+  const navButtons = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('.section');
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navButtons.forEach(b => b.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.section).classList.add('active');
+      // Hide love message on navigation
+      document.getElementById('loveMessage').style.display = 'none';
+    });
+  });
+
+  // Typing effect on home section
+  const fullText = "Hey Kiara 💕\n\nI hope this finds you smiling…\nbecause just thinking about you does that to me every time.";
+  let index = 0;
+  const speed = 60;
+  const typeElement = document.getElementById("typeText");
+  function typeEffect() {
+    if (index < fullText.length) {
+      if (fullText.charAt(index) === '\n') {
+        typeElement.innerHTML += "<br><br>";
+      } else {
+        typeElement.innerHTML += fullText.charAt(index);
+      }
+      index++;
+      setTimeout(typeEffect, speed);
+    }
+  }
+  setTimeout(typeEffect, 600);
+
+  // Countdown timer to next Friday
+  function updateCountdown() {
+    const now = new Date();
+    const nextFriday = new Date(now);
+    const daysToFriday = (5 - now.getDay() + 7) % 7 || 7;
+    nextFriday.setDate(now.getDate() + daysToFriday);
+    nextFriday.setHours(0,0,0,0);
+
+    const diff = nextFriday - now;
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+
+    document.getElementById('countdown').innerHTML =
+      `Just <strong>${days}</strong> days and <strong>${hours}</strong> hours until Friday…<br>until I get to feel you in my thoughts all over again 💕`;
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 3600000);
+
+  // Password and memories unlocking
+  function showPassword() {
+    const box = document.getElementById('passwordBox');
+    box.style.display = 'block';
+  }
+
+  function checkPassword() {
+    const input = document.getElementById('passwordInput').value.trim().toLowerCase();
+    if (input === 'kiara') {
+      const gallerySection = document.getElementById('gallerySection');
+      gallerySection.style.display = 'block';
+      gallerySection.classList.remove('hidden');
+      document.getElementById('passwordBox').style.display = 'none';
+      loadGallery();
+    } else {
+      alert("Hmm… that doesn’t sound like my favorite person 😉 Try again!");
+    }
+  }
+
+  // Load gallery images and videos dynamically
+  function loadGallery() {
+    const gallery = document.getElementById('gallery');
+    if(gallery.children.length) return; // Prevent duplicate loading
+
+    // Images
+    for(let i=0; i<=12; i++) {
+      const img = document.createElement('img');
+      img.src = `assets/images/${i}.jpeg`;
+      img.alt = `Memory ${i+1}`;
+      img.loading = "lazy";
+      img.onclick = () => openLightbox(img.src);
+      gallery.appendChild(img);
+    }
+
+    // Videos
+    const videos = ['kiara.mp4','kiara2.mp4','kiara3.mp4','kiara4.mp4'];
+    videos.forEach(videoName => {
+      const video = document.createElement('video');
+      video.src = `assets/videos/${videoName}`;
+      video.controls = true;
+      video.loading = "lazy";
+      video.style.cursor = 'pointer';
+      gallery.appendChild(video);
+    });
+  }
+
+  // Lightbox for gallery images
+  function openLightbox(src) {
+    let lightbox = document.getElementById('lightbox');
+    if(!lightbox) {
+      lightbox = document.createElement('div');
+      lightbox.id = 'lightbox';
+      lightbox.style.position = 'fixed';
+      lightbox.style.top = 0;
+      lightbox.style.left = 0;
+      lightbox.style.width = '100vw';
+      lightbox.style.height = '100vh';
+      lightbox.style.background = 'rgba(0,0,0,0.9)';
+      lightbox.style.display = 'flex';
+      lightbox.style.justifyContent = 'center';
+      lightbox.style.alignItems = 'center';
+      lightbox.style.zIndex = '1000';
+      lightbox.style.cursor = 'zoom-out';
+      lightbox.onclick = () => lightbox.remove();
+
+      const img = document.createElement('img');
+      img.id = 'lightbox-img';
+      img.style.maxWidth = '90vw';
+      img.style.maxHeight = '90vh';
+      img.style.borderRadius = '20px';
+      img.style.boxShadow = '0 0 30px #ff69b4';
+      lightbox.appendChild(img);
+
+      document.body.appendChild(lightbox);
+    }
+    document.getElementById('lightbox-img').src = src;
+  }
+
+  // Save and show messages
+  function saveMessage() {
+    const input = document.getElementById('messageInput');
+    const val = input.value.trim();
+    if(val === '') return;
+    const container = document.getElementById('messagesContainer');
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('message');
+    msgDiv.textContent = val;
+    container.appendChild(msgDiv);
+    input.value = '';
+
+    // Save to local storage
+    let messages = JSON.parse(localStorage.getItem('kiaraMessages')) || [];
+    messages.push(val);
+    localStorage.setItem('kiaraMessages', JSON.stringify(messages));
+  }
+
+  // Load saved messages on startup
+  function loadMessages() {
+    let messages = JSON.parse(localStorage.getItem('kiaraMessages')) || [];
+    const container = document.getElementById('messagesContainer');
+    messages.forEach(m => {
+      const msgDiv = document.createElement('div');
+      msgDiv.classList.add('message');
+      msgDiv.textContent = m;
+      container.appendChild(msgDiv);
+    });
+  }
+  loadMessages();
+
+  // Show love message + confetti
+  function showLove() {
+    const msg = document.getElementById('loveMessage');
+    msg.style.display = 'block';
+    msg.classList.add('hidden');
+    setTimeout(() => msg.classList.remove('hidden'), 100);
+
+    confetti({
+      particleCount: 200,
+      spread: 90,
+      origin: { y: 0.55 },
+      colors: ['#ff69b4', '#ff1493', '#fff', '#f093fb', '#4facfe']
+    });
+  }
+
+  // Initialize Particles.js hearts
+  particlesJS("particles-js", {
+    particles: {
+      number: { value: 50, density: { enable: true, value_area: 800 } },
+      color: { value: ["#ff69b4", "#ff1493", "#ffffff"] },
+      shape: { type: "heart" },
+      opacity: { value: 0.7, random: true, anim: { enable: true, speed: 1 } },
+      size: { value: 25, random: true },
+      move: {
+        enable: true,
+        speed: 1.5,
+        direction: "none",
+        random: true,
+        straight: false,
+        out_mode: "out"
+      }
+    },
+    interactivity: {
+      detect_on: "window",
+      events: {
+        onhover: { enable: true, mode: "repulse" },
+        resize: true
+      }
+    },
+    retina_detect: true
+  });
+</script>
+
+<style>
+  /* Basic resets and body */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0;
+    font-family: 'Poppins', sans-serif;
+    height: 100%;
+    background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: white;
+    overflow: hidden;
+  }
+
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Hearts background */
+  #particles-js {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+  }
+
+  /* Main container */
+  .app-container {
+    position: relative;
+    z-index: 10;
+    max-width: 540px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 40px 30px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+  }
+
+  /* Navigation bar */
+  .bottom-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+  }
+  .bottom-nav .nav-btn {
+    background: linear-gradient(45deg, #ff6b9d, #ff8a9e);
+    border: none;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+    transition: all 0.3s ease;
+    flex: 1;
+    margin: 0 5px;
+  }
+  .bottom-nav .nav-btn.active,
+  .bottom-nav .nav-btn:hover {
+    box-shadow: 0 8px 25px rgba(255, 107, 157, 0.8);
+    transform: scale(1.1);
+  }
+
+  /* Sections styling */
+  .sections {
+    min-height: 400px;
+  }
+  .section {
+    display: none;
+    animation: fadeIn 0.8s ease forwards;
+  }
+  .section.active {
+    display: block;
+  }
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+
+  /* Home section */
+  #home h1#typeText {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.6rem;
+    margin-bottom: 10px;
+    white-space: pre-line;
+  }
+  #home p {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+  }
+  #countdown {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 25px;
+  }
+  #loveMessage {
+    background: rgba(255, 105, 180, 0.3);
+    border-radius: 20px;
+    padding: 20px;
+    font-size: 1.3rem;
+    text-align: center;
+    color: #ff69b4;
+    box-shadow: 0 0 15px #ff69b4;
+    user-select: none;
+  }
+  #loveMessage.hidden {
+    display: none;
+  }
+  #home button {
+    background: #ff6b9d;
+    border: none;
+    border-radius: 40px;
+    color: white;
+    padding: 12px 30px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(255,107,157,0.5);
+    transition: all 0.3s ease;
+  }
+  #home button:hover {
+    box-shadow: 0 6px 25px rgba(255,107,157,0.8);
+    transform: scale(1.05);
+  }
+
+  /* Song section */
+  #song .subtitle {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  iframe {
+    border-radius: 20px;
+    max-width: 100%;
+  }
+
+  /* Memories */
+  #memories button {
+    background: #ff69b4;
+    border: none;
+    border-radius: 40px;
+    color: white;
+    padding: 15px 25px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(255,105,180,0.7);
+    display: block;
+    margin: 0 auto 25px;
+    transition: all 0.3s ease;
+  }
+  #memories button:hover {
+    box-shadow: 0 8px 40px rgba(255,105,180,1);
+    transform: scale(1.07);
+  }
+  #passwordBox {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  #passwordBox.hidden {
+    display: none;
+  }
+  #passwordBox input {
+    padding: 10px 15px;
+    font-size: 1rem;
+    border-radius: 30px;
+    border: none;
+    outline: none;
+    width: 200px;
+    text-align: center;
+  }
+  #passwordBox button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 30px;
+    border: none;
+    background: #ff6b9d;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(255,107,157,0.5);
+    transition: all 0.3s ease;
+  }
+  #passwordBox button:hover {
+    box-shadow: 0 6px 25px rgba(255,107,157,0.8);
+    transform: scale(1.05);
+  }
+  #gallerySection {
+    margin-top: 15px;
+  }
+  #gallerySection.hidden {
+    display: none;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(110px,1fr));
+    gap: 10px;
+  }
+  .gallery img, .gallery video {
+    width: 100%;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(255,105,180,0.3);
+    transition: transform 0.3s ease;
+  }
+  .gallery img:hover, .gallery video:hover {
+    transform: scale(1.05);
+  }
+  video {
+    object-fit: cover;
+    height: 120px;
+  }
+
+  /* Messages section */
+  #messages {
+    text-align: center;
+  }
+  #messages h2 {
+    margin-bottom: 15px;
+    font-weight: 700;
+  }
+  .messages-container {
+    max-height: 150px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(255,107,157,0.3);
+  }
+  .message {
+    background: rgba(255, 105, 180, 0.3);
+    margin: 8px 0;
+    padding: 10px 15px;
+    border-radius: 15px;
+    text-align: left;
+    color: #fff;
+    font-weight: 500;
+    font-size: 1rem;
+  }
+  #messageInput {
+    width: 100%;
+    border-radius: 30px;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    resize: none;
+    outline: none;
+  }
+  #messages button {
+    margin-top: 12px;
+    background: #ff69b4;
+    border: none;
+    border-radius: 40px;
+    color: white;
+    padding: 12px 30px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(255,105,180,0.7);
+    transition: all 0.3s ease;
+  }
+  #messages button:hover {
+    box-shadow: 0 8px 40px rgba(255,105,180,1);
+    transform: scale(1.05);
+  }
+
+  /* Lightbox */
+  #lightbox {
+    cursor: zoom-out;
+  }
+</style>
+
+</body>
+</html>
