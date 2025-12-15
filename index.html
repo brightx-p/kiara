@@ -2,579 +2,347 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>For Kiara 💕</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For My Kiara ♡</title>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#fce7f3" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Custom Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            handwriting: ['"Cedarville Cursive"', 'cursive'],
+            display: ['"Playfair Display"', 'serif'],
+            sans: ['"Inter"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            pastel: {
+              pink: '#fce7f3',
+              rose: '#f9a8d4',
+              lavender: '#e9d5ff',
+              mint: '#c5f6e9',
+              peach: '#ffdac1',
+              sky: '#dbeafe',
+            }
+          },
+          animation: {
+            'float-slow': 'float 10s ease-in-out infinite',
+            'gentle-bob': 'bob 4s ease-in-out infinite',
+            'fade-up': 'fadeUp 1.2s ease-out forwards',
+            'heartbeat-slow': 'heartbeat 4s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-12px)' },
+            },
+            bob: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-8px)' },
+            },
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            heartbeat: {
+              '0%, 100%': { transform: 'scale(1)' },
+              '14%': { transform: 'scale(1.08)' },
+              '28%': { transform: 'scale(1)' },
+              '42%': { transform: 'scale(1.08)' },
+              '70%': { transform: 'scale(1)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&family=Cedarville+Cursive&display=swap" rel="stylesheet">
+
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
   <!-- Particles.js -->
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
-  <!-- Confetti -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
-
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    .glass {
+      background: rgba(255, 255, 255, 0.35);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    body {
+      background: linear-gradient(135deg, #fce7f3 0%, #e9d5ff 30%, #dbeafe 60%, #c5f6e9 100%);
+      min-height: 100vh;
+    }
+    /* Hide scrollbar but keep scrolling functionality */
+    ::-webkit-scrollbar {
+      display: none;
+    }
     body, html {
-      font-family: 'Poppins', sans-serif;
-      height: 100%;
-      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fad0c4, #ff9a9e, #a18cd1, #fbc2eb);
-      background-size: 600% 600%;
-      animation: gradientBG 20s ease infinite;
-      color: white;
-      overflow: hidden;
-    }
-
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    #particles-js {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 1;
-    }
-
-    .app-container {
-      position: relative;
-      z-index: 10;
-      max-width: 540px;
-      margin: 0 auto;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 0 30px rgba(0,0,0,0.3);
-    }
-
-    /* Top Navigation */
-    .top-nav {
-      display: flex;
-      justify-content: space-around;
-      padding: 15px 0;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-      flex-shrink: 0;
-    }
-
-    .nav-btn {
-      background: none;
-      border: none;
-      color: rgba(255,255,255,0.8);
-      font-size: 1.8rem;
-      padding: 10px;
-      position: relative;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .nav-btn.active {
-      color: #ff69b4;
-      animation: bouncePulse 1.5s infinite;
-    }
-
-    .nav-btn::after {
-      content: attr(data-label);
-      display: block;
-      font-size: 0.75rem;
-      color: white;
-      margin-top: 6px;
-      font-weight: 500;
-    }
-
-    .nav-btn.active::after {
-      color: #ff69b4;
-    }
-
-    /* Content */
-    .content-container {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px 15px;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .section {
-      display: none;
-      flex-direction: column;
-      animation: fadeIn 0.8s ease forwards;
-      min-height: 100%;
-    }
-
-    .section.active {
-      display: flex;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .section > * {
-      opacity: 0;
-      transform: translateY(30px);
-      animation: floatIn 1s ease forwards;
-    }
-
-    .section h1 { animation-delay: 0.3s; font-size: 2.6rem; }
-    .section .subtitle, .section p { animation-delay: 0.5s; }
-    .section iframe, .section button:first-of-type { animation-delay: 0.7s; }
-
-    @keyframes floatIn {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes bouncePulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 15px #ff69b4; }
-      50% { box-shadow: 0 0 35px #ff1493, 0 0 50px #ff69b4; }
-    }
-
-    /* Home */
-    #typeText {
-      font-family: 'Dancing Script', cursive;
-      font-size: 2.8rem;
-      line-height: 1.3;
-      margin-bottom: 20px;
-      position: relative;
-    }
-
-    #typeText::after {
-      content: '|';
-      animation: blink 1s infinite;
-      color: #ff69b4;
-    }
-
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
-
-    #home p {
-      font-size: 1.25rem;
-      line-height: 1.6;
-      margin: 20px 0;
-    }
-
-    #countdown {
-      font-size: 1.1rem;
-      margin: 25px 0;
-      padding: 18px;
-      background: rgba(255,105,180,0.25);
-      border-radius: 25px;
-      text-align: center;
-      animation: glow 4s infinite;
-    }
-
-    #loveMessage {
-      background: rgba(255,105,180,0.4);
-      border-radius: 25px;
-      padding: 25px;
-      font-size: 1.5rem;
-      text-align: center;
-      margin-top: 30px;
-      backdrop-filter: blur(15px);
-      border: 2px solid rgba(255,105,180,0.5);
-      animation: glow 3s infinite, bouncePulse 4s infinite;
-      display: none;
-    }
-
-    /* Buttons */
-    button {
-      background: linear-gradient(45deg, #ff6b9d, #ff8ac5);
-      border: none;
-      border-radius: 50px;
-      color: white;
-      padding: 15px 30px;
-      font-weight: 700;
-      font-size: 1.1rem;
-      cursor: pointer;
-      box-shadow: 0 8px 25px rgba(255,107,157,0.6);
-      transition: all 0.4s ease;
-      align-self: center;
-      margin: 15px 0;
-      animation: bouncePulse 2.5s infinite;
-    }
-
-    button:hover, button:active {
-      transform: translateY(-5px) scale(1.05);
-      box-shadow: 0 15px 35px rgba(255,107,157,0.9);
-    }
-
-    /* Song */
-    #song .subtitle {
-      font-size: 1.25rem;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    iframe {
-      border-radius: 25px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-      width: 100%;
-      height: 152px;
-    }
-
-    /* Treasures from You (formerly Memories) */
-    #passwordBox input {
-      width: 80%;
-      max-width: 300px;
-      padding: 12px 20px;
-      border-radius: 30px;
-      border: none;
-      font-size: 1rem;
-      text-align: center;
-      margin: 15px 0;
-    }
-
-    /* Gallery */
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .gallery img, .gallery video {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(255,105,180,0.4);
-      transition: all 0.5s ease;
-      cursor: pointer;
-    }
-
-    .gallery img:hover, .gallery video:hover {
-      transform: scale(1.08) rotate(2deg);
-      box-shadow: 0 20px 40px rgba(255,20,147,0.7);
-    }
-
-    /* Messages */
-    #messages h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 1.8rem;
-    }
-
-    .messages-container {
-      flex: 1;
-      overflow-y: auto;
-      background: rgba(255,255,255,0.15);
-      padding: 20px;
-      border-radius: 25px;
-      margin-bottom: 20px;
-      max-height: 250px;
-    }
-
-    .message {
-      background: linear-gradient(135deg, #ff9a9e, #fecfef);
-      color: #333;
-      padding: 15px 20px;
-      border-radius: 20px;
-      margin: 12px 0;
-      animation: floatIn 0.8s ease backwards;
-      box-shadow: 0 8px 20px rgba(255,105,180,0.3);
-      position: relative;
-      opacity: 0;
-      transform: translateY(20px);
-    }
-
-    .message.show {
-      opacity: 1;
-      transform: translateY(0);
-      transition: all 0.6s ease;
-    }
-
-    .message::after {
-      content: '💖';
-      position: absolute;
-      right: -10px;
-      top: -10px;
-      font-size: 1.5rem;
-      animation: bouncePulse 2s infinite;
-    }
-
-    #messageInput {
-      width: 100%;
-      padding: 15px 20px;
-      border-radius: 30px;
-      border: none;
-      font-size: 1rem;
-      resize: none;
-      margin-bottom: 10px;
-    }
-
-    /* Responsive */
-    @media (max-width: 480px) {
-      .section { padding: 15px; }
-      #typeText { font-size: 2.4rem; }
-      #home p { font-size: 1.15rem; }
-      #countdown { font-size: 1rem; padding: 15px; }
-      #loveMessage { font-size: 1.4rem; padding: 20px; }
-      button { padding: 14px 28px; font-size: 1.05rem; }
-      .gallery { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
-      .gallery img, .gallery video { height: 150px; }
-      .nav-btn { font-size: 1.6rem; }
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;     /* Firefox */
     }
   </style>
 </head>
-<body>
+<body class="min-h-screen text-gray-800 font-sans">
 
-<div id="particles-js"></div>
+  <div id="particles-js" class="fixed inset-0 pointer-events-none opacity-60"></div>
 
-<div class="app-container">
-  <nav class="top-nav">
-    <button class="nav-btn active" data-section="home" data-label="Home">🏠</button>
-    <button class="nav-btn" data-section="song" data-label="Song">🎵</button>
-    <button class="nav-btn" data-section="treasures" data-label="Treasures">💝</button>
-    <button class="nav-btn" data-section="messages" data-label="Messages">💌</button>
-  </nav>
+  <div class="relative z-10 min-h-screen flex flex-col lg:max-w-4xl lg:mx-auto">
 
-  <div class="content-container">
-    <section id="home" class="section active">
-      <h1 id="typeText"></h1>
-      <p>Somewhere between all the little conversations and stolen smiles,<br>you quietly became my favorite feeling 😌💕</p>
-      <div id="countdown"></div>
-      <button onclick="showLove()">One last thing… ❤️</button>
-      <div id="loveMessage">
-        Kiara…<br><br>
-        You’re not just special to me.<br>
-        You’re my peace,<br>
-        my joy,<br>
-        my safe place.<br><br>
-        <span style="font-size:2rem;">You’re home 💗</span>
-      </div>
-    </section>
+    <!-- Mobile Top Navigation Bar -->
+    <nav class="glass border-b border-white/30 bg-white/20 backdrop-blur-lg z-50 flex justify-around py-4 md:hidden fixed top-0 left-0 right-0">
+      <button data-section="home" class="nav-btn p-3 text-2xl text-pastel-rose transition active:scale-110"><i class="fas fa-home"></i></button>
+      <button data-section="song" class="nav-btn p-3 text-2xl text-pastel-rose transition active:scale-110"><i class="fas fa-music"></i></button>
+      <button data-section="treasures" class="nav-btn p-3 text-2xl text-pastel-rose transition active:scale-110"><i class="fas fa-gift"></i></button>
+      <button data-section="messages" class="nav-btn p-3 text-2xl text-pastel-rose transition active:scale-110"><i class="fas fa-envelope"></i></button>
+    </nav>
 
-    <section id="song" class="section">
-      <div class="subtitle">This song reminds me of you… press play when you’re ready 💞</div>
-      <iframe src="https://open.spotify.com/embed/track/0PqiJTvvmEiV3rTZcQ7SIS" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-    </section>
+    <!-- Desktop Side Navigation -->
+    <aside class="hidden md:flex fixed left-0 top-0 bottom-0 w-20 glass flex-col items-center py-10 space-y-10 shadow-2xl z-50">
+      <div class="text-4xl animate-heartbeat-slow text-pastel-rose mb-8">♡</div>
+      <button data-section="home" class="nav-btn p-4 text-3xl text-pastel-rose transition hover:scale-125"><i class="fas fa-home"></i></button>
+      <button data-section="song" class="nav-btn p-4 text-3xl text-pastel-rose transition hover:scale-125"><i class="fas fa-music"></i></button>
+      <button data-section="treasures" class="nav-btn p-4 text-3xl text-pastel-rose transition hover:scale-125"><i class="fas fa-gift"></i></button>
+      <button data-section="messages" class="nav-btn p-4 text-3xl text-pastel-rose transition hover:scale-125"><i class="fas fa-envelope"></i></button>
+    </aside>
 
-    <section id="treasures" class="section">
-      <button onclick="showPassword()">Open your treasures 🔒💝</button>
-      <div id="passwordBox" style="display:none; text-align:center;">
-        <p class="subtitle">Enter your name to continue 😉</p>
-        <input type="text" id="passwordInput" placeholder="Your name…" autocomplete="off" />
-        <button onclick="checkPassword()">Unlock Forever 💕</button>
-      </div>
-      <div id="gallerySection" style="display:none;">
-        <div class="subtitle">Every photo and video you ever sent me…<br>I treasured them all, forever 💖</div>
-        <div class="gallery" id="gallery"></div>
-      </div>
-    </section>
+    <!-- Main Content -->
+    <main class="flex-1 md:ml-20 pt-20 md:pt-8 pb-8 overflow-y-auto px-4">
 
-    <section id="messages" class="section">
-      <h2>Sweet Messages 💌</h2>
-      <div class="messages-container" id="messagesContainer"></div>
-      <textarea id="messageInput" placeholder="Write me a note... (it will appear instantly on all devices 💕)" rows="4"></textarea>
-      <button onclick="sendMessage()">Send 💖</button>
-    </section>
+      <!-- Header -->
+      <header class="text-center mb-12 animate-fade-up">
+        <div class="text-6xl mb-4 animate-heartbeat-slow">♡</div>
+        <h1 class="text-4xl md:text-5xl font-handwriting text-pastel-rose">For my Kiara</h1>
+        <p class="mt-4 text-lg text-gray-700">You make my world softer and sweeter every day ♡</p>
+      </header>
+
+      <!-- Sections -->
+      <section id="home" class="section space-y-10">
+        <div class="glass rounded-3xl p-8 shadow-xl text-center animate-fade-up">
+          <p class="text-lg leading-relaxed text-gray-700">
+            Kiara ♡<br><br>
+            Just thinking about your smile makes my heart feel all warm and fuzzy.<br>
+            You're my favorite notification, my coziest thought, and the sweetest part of my day.
+          </p>
+          <p id="countdown" class="mt-8 text-pastel-rose font-handwriting text-2xl"></p>
+        </div>
+
+        <button onclick="revealLove()" class="glass py-6 rounded-3xl text-xl font-medium shadow-xl hover:shadow-2xl transition hover:scale-105">
+          There's something I've been wanting to say...
+        </button>
+
+        <div id="loveMessage" class="hidden space-y-8">
+          <div class="glass rounded-3xl p-10 text-center animate-gentle-bob">
+            <p class="text-3xl font-handwriting text-pastel-rose mb-6">My darling Kiara,</p>
+            <p class="text-lg leading-loose text-gray-700">
+              You are my calm in the chaos,<br>
+              my laughter on quiet days,<br>
+              the person who makes everything feel just right.<br><br>
+              I don't just love you —<br>
+              you feel like home to me ♡
+            </p>
+            <p class="text-4xl font-handwriting text-pastel-rose mt-8">Forever yours</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="song" class="section hidden text-center space-y-8">
+        <p class="text-2xl font-handwriting text-pastel-rose">This song always reminds me of you ♡</p>
+        <div class="glass rounded-3xl p-5 shadow-xl">
+          <iframe src="https://open.spotify.com/embed/track/0PqiJTvvmEiV3rTZcQ7SIS" width="100%" height="380" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" class="rounded-2xl"></iframe>
+        </div>
+      </section>
+
+      <section id="treasures" class="section hidden text-center space-y-10">
+        <div id="locked">
+          <p class="text-xl font-handwriting text-pastel-rose mb-8">My little collection of your sweetest moments ♡</p>
+          <button onclick="showPassword()" class="glass py-6 px-12 rounded-full text-lg font-medium shadow-xl hover:scale-105 transition">
+            Unlock with a smile
+          </button>
+        </div>
+
+        <div id="passwordBox" class="hidden space-y-6">
+          <input type="text" id="passwordInput" placeholder="Hint: the prettiest name ♡" class="w-full max-w-sm glass py-5 px-8 rounded-full text-center text-lg">
+          <button onclick="checkPassword()" class="glass py-5 px-14 rounded-full font-medium shadow-xl hover:scale-105 transition">
+            Open ♡
+          </button>
+        </div>
+
+        <div id="gallerySection" class="hidden">
+          <p class="text-xl font-handwriting text-pastel-rose mb-8">I treasure every single one because they're you</p>
+          <div id="gallery" class="grid grid-cols-2 gap-5"></div>
+        </div>
+      </section>
+
+      <section id="messages" class="section hidden space-y-8">
+        <h2 class="text-3xl text-center font-handwriting text-pastel-rose">Our sweet notes ♡</h2>
+        <div id="messagesContainer" class="space-y-5 max-h-96 overflow-y-auto glass p-6 rounded-3xl"></div>
+        <div class="glass rounded-3xl p-6">
+          <textarea id="messageInput" rows="3" placeholder="Write something cute... it appears instantly ♡" class="w-full bg-transparent resize-none focus:outline-none text-lg"></textarea>
+          <button onclick="sendMessage()" class="mt-5 w-full py-4 bg-pastel-rose bg-opacity-70 rounded-2xl font-medium hover:bg-opacity-90 transition">
+            Send ♡
+          </button>
+        </div>
+      </section>
+    </main>
   </div>
-</div>
 
-<script>
-  // === Firebase Configuration ===
-  // IMPORTANT: Replace with your own Firebase project config!
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-  const messagesRef = db.ref('messages');
+  <script>
+    // Firebase config (replace with yours)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const messagesRef = db.ref('messages');
 
-  // Particles
-  const particleCount = window.innerWidth < 480 ? 60 : 100;
-  particlesJS("particles-js", {
-    particles: {
-      number: { value: particleCount },
-      color: { value: ["#ff69b4", "#ff1493", "#ffb6c1", "#ffffff"] },
-      shape: { type: "heart" },
-      opacity: { value: 0.8, random: true },
-      size: { value: 35, random: true },
-      move: { enable: true, speed: 2, direction: "none", random: true, attract: { enable: true } }
-    },
-    interactivity: { events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } } }
-  });
-
-  // Navigation
-  const navButtons = document.querySelectorAll('.nav-btn');
-  const sections = document.querySelectorAll('.section');
-  navButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.dataset.section;
-      navButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      sections.forEach(s => s.classList.remove('active'));
-      document.getElementById(target).classList.add('active');
-      confettiBurst();
+    // Soft floating hearts
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: window.innerWidth < 768 ? 30 : 60 },
+        color: { value: ["#f9a8d4", "#e9d5ff", "#c5f6e9", "#ffffff"] },
+        shape: { type: "heart" },
+        opacity: { value: 0.4, random: true },
+        size: { value: 25, random: true },
+        move: { enable: true, speed: 1, direction: "none", random: true }
+      },
+      interactivity: { events: { onhover: { enable: true, mode: "repulse" } } }
     });
-  });
 
-  // Typing effect
-  const fullText = "Hey Kiara 💕\n\nI hope this finds you smiling…\nbecause just thinking about you does that to me every time.";
-  let index = 0;
-  const typeElement = document.getElementById("typeText");
-  function typeEffect() {
-    if (index < fullText.length) {
-      if (fullText.charAt(index) === '\n') typeElement.innerHTML += "<br><br>";
-      else typeElement.innerHTML += fullText.charAt(index);
-      index++;
-      setTimeout(typeEffect, 70);
-    } else {
-      typeElement.innerHTML = typeElement.innerHTML.replace('|', '');
+    // Navigation
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('text-pastel-rose', 'opacity-100'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.add('opacity-60'));
+        btn.classList.remove('opacity-60');
+        btn.classList.add('text-pastel-rose', 'opacity-100');
+
+        document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+        document.getElementById(btn.dataset.section).classList.remove('hidden');
+
+        confetti({ particleCount: 60, spread: 90, origin: { y: 0.8 }, colors: ['#fce7f3', '#f9a8d4', '#e9d5ff'] });
+      });
+    });
+
+    // Initial active state
+    document.querySelector('[data-section="home"]').classList.add('text-pastel-rose', 'opacity-100');
+
+    // Countdown (current date: Dec 15, 2025 → next Friday is Dec 19)
+    function updateCountdown() {
+      const now = new Date();
+      let nextFriday = new Date(now);
+      let daysToAdd = (5 - now.getDay() + 7) % 7;
+      if (daysToAdd === 0) daysToAdd = 7;
+      nextFriday.setDate(now.getDate() + daysToAdd);
+      nextFriday.setHours(0,0,0,0);
+
+      const diff = nextFriday - now;
+      const days = Math.floor(diff / (1000*60*60*24));
+      const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+
+      document.getElementById('countdown').innerHTML = 
+        `Only <span class="text-3xl">${days}</span> days & <span class="text-3xl">${hours}</span> hours<br>until I get to hug you ♡`;
     }
-  }
-  setTimeout(typeEffect, 800);
+    updateCountdown();
+    setInterval(updateCountdown, 3600000);
 
-  // Countdown
-  function updateCountdown() {
-    const now = new Date();
-    let nextFriday = new Date(now);
-    let daysToAdd = (5 - now.getDay() + 7) % 7;
-    if (daysToAdd === 0) daysToAdd = 7;
-    nextFriday.setDate(now.getDate() + daysToAdd);
-    nextFriday.setHours(0,0,0,0);
-    const diff = nextFriday - now;
-    const days = Math.floor(diff / (1000*60*60*24));
-    const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-    document.getElementById('countdown').innerHTML =
-      `Just <strong>${days}</strong> days and <strong>${hours}</strong> hours until Friday…<br>until I get to hold you again 💕`;
-  }
-  updateCountdown();
-  setInterval(updateCountdown, 3600000);
-
-  // Love message
-  function showLove() {
-    const msg = document.getElementById('loveMessage');
-    msg.style.display = 'block';
-    massiveConfetti();
-  }
-
-  function massiveConfetti() {
-    confetti({ particleCount: 400, spread: 120, origin: { y: 0.6 } });
-    confetti({ particleCount: 200, angle: 60, spread: 55, origin: { x: 0 } });
-    confetti({ particleCount: 200, angle: 120, spread: 55, origin: { x: 1 } });
-  }
-
-  function confettiBurst() {
-    confetti({ particleCount: 100, spread: 70, origin: { y: 0.9 } });
-  }
-
-  // Treasures (formerly Memories)
-  function showPassword() {
-    document.getElementById('passwordBox').style.display = 'block';
-    confettiBurst();
-  }
-
-  function checkPassword() {
-    const input = document.getElementById('passwordInput').value.trim().toLowerCase();
-    if (input === 'kiara') {
-      document.getElementById('gallerySection').style.display = 'block';
-      document.getElementById('passwordBox').style.display = 'none';
-      loadGallery();
-      massiveConfetti();
-    } else {
-      alert("Hmm… that doesn’t sound like my favorite person 😉 Try again!");
+    // Love reveal
+    function revealLove() {
+      document.getElementById('loveMessage').classList.remove('hidden');
+      confetti({ particleCount: 300, spread: 120, colors: ['#fce7f3', '#f9a8d4', '#e9d5ff', '#c5f6e9'] });
     }
-  }
 
-  function loadGallery() {
-    const gallery = document.getElementById('gallery');
-    if (gallery.children.length) return;
-    for(let i=0; i<=12; i++) {
+    // Treasures
+    function showPassword() {
+      document.getElementById('locked').classList.add('hidden');
+      document.getElementById('passwordBox').classList.remove('hidden');
+    }
+    function checkPassword() {
+      if (document.getElementById('passwordInput').value.trim().toLowerCase() === 'kiara') {
+        document.getElementById('passwordBox').classList.add('hidden');
+        document.getElementById('gallerySection').classList.remove('hidden');
+        loadGallery();
+        confetti({ particleCount: 400, spread: 150 });
+      } else {
+        alert("Almost... try the name that makes me smile the most ♡");
+      }
+    }
+    function loadGallery() {
+      const gallery = document.getElementById('gallery');
+      if (gallery.children.length) return;
+      for (let i = 0; i <= 12; i++) {
+        const img = document.createElement('img');
+        img.src = `assets/images/${i}.jpeg`;
+        img.className = "rounded-2xl object-cover w-full h-64 shadow-lg cursor-pointer hover:scale-105 transition";
+        img.onclick = () => openLightbox(img.src);
+        gallery.appendChild(img);
+      }
+      ['kiara.mp4', 'kiara2.mp4', 'kiara3.mp4', 'kiara4.mp4'].forEach(src => {
+        const video = document.createElement('video');
+        video.src = `assets/videos/${src}`;
+        video.controls = true;
+        video.className = "rounded-2xl w-full h-64 object-cover shadow-lg";
+        gallery.appendChild(video);
+      });
+    }
+    function openLightbox(src) {
+      const lb = document.createElement('div');
+      lb.className = 'fixed inset-0 bg-white bg-opacity-95 flex items-center justify-center z-50 backdrop-blur-sm';
+      lb.onclick = () => lb.remove();
       const img = document.createElement('img');
-      img.src = `assets/images/${i}.jpeg`;
-      img.loading = "lazy";
-      img.onclick = () => openLightbox(img.src);
-      gallery.appendChild(img);
+      img.src = src;
+      img.className = 'max-w-full max-h-full rounded-3xl shadow-2xl';
+      lb.appendChild(img);
+      document.body.appendChild(lb);
     }
-    const videos = ['kiara.mp4','kiara2.mp4','kiara3.mp4','kiara4.mp4'];
-    videos.forEach(v => {
-      const video = document.createElement('video');
-      video.src = `assets/videos/${v}`;
-      video.controls = true;
-      video.loading = "lazy";
-      video.style.borderRadius = '20px';
-      gallery.appendChild(video);
-    });
-  }
 
-  function openLightbox(src) {
-    let lightbox = document.getElementById('lightbox');
-    if(!lightbox) {
-      lightbox = document.createElement('div');
-      lightbox.id = 'lightbox';
-      lightbox.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.95);display:flex;justify-content:center;align-items:center;z-index:1000;backdrop-filter:blur(10px);';
-      lightbox.onclick = () => lightbox.remove();
-      const img = document.createElement('img');
-      img.style.cssText = 'max-width:95vw;max-height:95vh;border-radius:25px;box-shadow:0 0 50px #ff69b4;';
-      img.id = 'lightbox-img';
-      lightbox.appendChild(img);
-      document.body.appendChild(lightbox);
+    // Messages
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const text = input.value.trim();
+      if (!text) return;
+      messagesRef.push({ text, timestamp: Date.now() });
+      input.value = '';
+      confetti({ particleCount: 50, spread: 70 });
     }
-    document.getElementById('lightbox-img').src = src;
-  }
-
-  // Real-time Messages
-  const messagesContainer = document.getElementById('messagesContainer');
-
-  function sendMessage() {
-    const input = document.getElementById('messageInput');
-    const text = input.value.trim();
-    if (!text) return;
-    messagesRef.push({
-      text: text,
-      timestamp: firebase.database.ServerValue.TIMESTAMP
-    });
-    input.value = '';
-    confettiBurst();
-  }
-
-  messagesRef.on('child_added', (snapshot) => {
-    const msg = snapshot.val();
-    const div = document.createElement('div');
-    div.classList.add('message');
-    div.textContent = msg.text;
-    messagesContainer.appendChild(div);
-    setTimeout(() => div.classList.add('show'), 100);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  });
-
-  messagesRef.once('value').then(snapshot => {
-    snapshot.forEach(child => {
-      const msg = child.val();
+    messagesRef.on('child_added', snap => {
+      const msg = snap.val();
       const div = document.createElement('div');
-      div.classList.add('message', 'show');
       div.textContent = msg.text;
-      messagesContainer.appendChild(div);
+      div.className = 'glass p-6 rounded-3xl text-lg shadow-md animate-fade-up';
+      document.getElementById('messagesContainer').appendChild(div);
+      div.scrollIntoView({ behavior: 'smooth' });
     });
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  });
-</script>
 
+    // PWA Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
 </body>
 </html>
